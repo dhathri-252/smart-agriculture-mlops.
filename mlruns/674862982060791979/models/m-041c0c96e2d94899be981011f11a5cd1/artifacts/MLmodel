@@ -1,0 +1,39 @@
+artifact_path: /Users/vanukuridhathri/Desktop/smart-agriculture-mlops/mlruns/674862982060791979/models/m-041c0c96e2d94899be981011f11a5cd1/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.11.0
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.1
+    skops_trusted_types:
+    - sklearn.tree._tree.Tree
+is_signature_from_type_hint: false
+mlflow_version: 3.16.1
+model_id: m-041c0c96e2d94899be981011f11a5cd1
+model_size_bytes: 5214761
+model_uuid: m-041c0c96e2d94899be981011f11a5cd1
+prompts: null
+run_id: a04bfe39192945a5889d487ce46b9b4a
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "long", "name": "N", "required": true}, {"type": "long", "name":
+    "P", "required": true}, {"type": "long", "name": "K", "required": true}, {"type":
+    "double", "name": "temperature", "required": true}, {"type": "double", "name":
+    "humidity", "required": true}, {"type": "double", "name": "ph", "required": true},
+    {"type": "double", "name": "rainfall", "required": true}]'
+  outputs: '[{"type": "string", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-09-28 09:31:41.629957'

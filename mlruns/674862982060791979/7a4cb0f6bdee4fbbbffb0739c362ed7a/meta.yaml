@@ -1,0 +1,14 @@
+artifact_uri: /Users/vanukuridhathri/Desktop/smart-agriculture-mlops/mlruns/674862982060791979/7a4cb0f6bdee4fbbbffb0739c362ed7a/artifacts
+end_time: 1790587845368
+entry_point_name: ''
+experiment_id: '674862982060791979'
+lifecycle_stage: active
+run_id: 7a4cb0f6bdee4fbbbffb0739c362ed7a
+run_name: RandomForest-Training-Run
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1790587840689
+status: 4
+tags: []
+user_id: vanukuridhathri

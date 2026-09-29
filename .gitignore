@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+node_modules/
+frontend/dist/
+frontend/.vite/
+mlruns/.trash/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+.ipynb_checkpoints/

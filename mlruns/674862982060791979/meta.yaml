@@ -1,0 +1,9 @@
+artifact_location: /Users/vanukuridhathri/Desktop/smart-agriculture-mlops/mlruns/674862982060791979
+creation_time: 1790587840564
+effective_trace_archival_retention: null
+experiment_id: '674862982060791979'
+last_update_time: 1790587840564
+lifecycle_stage: active
+name: Smart-Agriculture-Crop-Recommendation
+trace_location: null
+workspace: default

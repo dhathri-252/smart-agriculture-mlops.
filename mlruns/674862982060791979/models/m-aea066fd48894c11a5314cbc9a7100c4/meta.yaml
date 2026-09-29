@@ -1,0 +1,10 @@
+artifact_location: /Users/vanukuridhathri/Desktop/smart-agriculture-mlops/mlruns/674862982060791979/models/m-aea066fd48894c11a5314cbc9a7100c4/artifacts
+creation_timestamp: 1790587840707
+experiment_id: '674862982060791979'
+last_updated_timestamp: 1790587845365
+model_id: m-aea066fd48894c11a5314cbc9a7100c4
+model_type: null
+name: model
+source_run_id: 7a4cb0f6bdee4fbbbffb0739c362ed7a
+status: 3
+status_message: null
