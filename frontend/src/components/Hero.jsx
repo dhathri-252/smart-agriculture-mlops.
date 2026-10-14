@@ -1,28 +1,32 @@
+import { useTranslation } from '../i18n/LanguageContext.jsx'
+
 export default function Hero({ onStart }) {
+  const { t } = useTranslation()
   return (
     <section id="home" className="hero">
       <div className="container hero-grid">
         <div className="hero-copy">
-          <span className="badge">🌾 MLOps · Random Forest · MLflow · DVC</span>
+          <span className="badge">🌾 {t('hero.badge')}</span>
           <h1>
-            Smart Agriculture
-            <span className="hero-accent">AI-Powered Crop Recommendation</span>
+            {t('hero.title')}
+            <span className="hero-accent">{t('hero.accent')}</span>
           </h1>
-          <p className="hero-desc">
-            Use soil and environmental conditions to get an AI-powered crop recommendation.
-          </p>
+          <p className="hero-desc">{t('hero.desc')}</p>
           <div className="hero-actions">
             <button className="btn btn-primary btn-lg" onClick={onStart}>
-              Start Prediction →
+              {t('hero.start')}
             </button>
-            <button className="btn btn-ghost btn-lg" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
-              Learn More
+            <button
+              className="btn btn-ghost btn-lg"
+              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              {t('hero.learn')}
             </button>
           </div>
           <ul className="hero-points">
-            <li>✅ 7 soil &amp; climate inputs</li>
-            <li>✅ 22 supported crops</li>
-            <li>✅ FastAPI + Random Forest backend</li>
+            <li>✅ {t('hero.point1')}</li>
+            <li>✅ {t('hero.point2')}</li>
+            <li>✅ {t('hero.point3')}</li>
           </ul>
         </div>
         <div className="hero-visual" aria-hidden="true">
@@ -35,10 +39,10 @@ export default function Hero({ onStart }) {
             </div>
             <div className="field-footer">
               <div>
-                <strong>Live soil analysis</strong>
-                <small>N · P · K · pH · Rainfall</small>
+                <strong>{t('hero.live')}</strong>
+                <small>{t('hero.liveSub')}</small>
               </div>
-              <span className="pulse">● Live</span>
+              <span className="pulse">● {t('hero.liveDot')}</span>
             </div>
           </div>
         </div>

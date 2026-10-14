@@ -1,94 +1,37 @@
-import os
+"""Smart Agriculture Prediction API — application entrypoint.
 
-from fastapi import FastAPI
+Preserves the original ``api.main:app`` module path used by Docker/uvicorn,
+the custom documentation pages, and the original endpoints (``/``, ``/health``,
+``POST /predict``). Feature endpoints are organised into ``api.routers``.
+"""
+
+import logging
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
 
-from src.predict import predict_crop
-
+from api import db
+from api.config import get_cors_origins
 from api.docs import redoc_html, swagger_ui_html
+from api.routers import (
+    admin,
+    assistant,
+    auth,
+    catalogue,
+    history,
+    locations,
+    predict,
+    recommend,
+    system,
+    weather,
+)
+from api.routers.system import APP_VERSION
 
-
-class CropInput(BaseModel):
-    N: float = Field(
-        ...,
-        description="Nitrogen (N) — nitrogen content in the soil.",
-        json_schema_extra={"example": 90},
-    )
-    P: float = Field(
-        ...,
-        description="Phosphorus (P) — phosphorus content in the soil.",
-        json_schema_extra={"example": 42},
-    )
-    K: float = Field(
-        ...,
-        description="Potassium (K) — potassium content in the soil.",
-        json_schema_extra={"example": 43},
-    )
-    temperature: float = Field(
-        ...,
-        description="Temperature — ambient temperature in degrees Celsius (°C).",
-        json_schema_extra={"example": 20.87},
-    )
-    humidity: float = Field(
-        ...,
-        description="Humidity — relative humidity as a percentage (%).",
-        json_schema_extra={"example": 82.0},
-    )
-    ph: float = Field(
-        ...,
-        description="Soil pH — soil acidity/alkalinity value (pH scale).",
-        json_schema_extra={"example": 6.5},
-    )
-    rainfall: float = Field(
-        ...,
-        description="Rainfall — rainfall in millimeters (mm).",
-        json_schema_extra={"example": 202.93},
-    )
-
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "N": 90,
-                "P": 42,
-                "K": 43,
-                "temperature": 20.87,
-                "humidity": 82.0,
-                "ph": 6.5,
-                "rainfall": 202.93,
-            }
-        }
-    }
-
-
-class CropPredictionResponse(BaseModel):
-    recommended_crop: str = Field(
-        ...,
-        description="Crop recommended by the trained Random Forest model.",
-        json_schema_extra={"example": "rice"},
-    )
-
-
-_DEFAULT_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
-
-def _get_allowed_origins() -> list:
-    raw = os.environ.get("CORS_ALLOW_ORIGINS", "")
-    extras = [o.strip() for o in raw.split(",") if o.strip()]
-    seen = set()
-    origins = []
-    for origin in _DEFAULT_ORIGINS + extras:
-        if origin not in seen:
-            seen.add(origin)
-            origins.append(origin)
-    return origins
-
-
-ALLOWED_ORIGINS = _get_allowed_origins()
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s",
+)
+logger = logging.getLogger("api")
 
 openapi_tags = [
     {
@@ -106,19 +49,53 @@ openapi_tags = [
             "recommend a suitable crop based on soil and environmental conditions."
         ),
     },
+    {
+        "name": "Catalogue",
+        "description": "Multilingual educational crop catalogue (search, filter, guides). Separate from ML predictions.",
+    },
+    {
+        "name": "History",
+        "description": "Stored prediction history (list and clear).",
+    },
+    {
+        "name": "Recommendations",
+        "description": "Smart farming recommendations combining prediction, soil and weather.",
+    },
+    {
+        "name": "Assistant",
+        "description": "AI agriculture assistant (provider abstraction with safe fallback).",
+    },
+    {
+        "name": "Weather",
+        "description": "Live weather lookup when a provider is configured.",
+    },
+    {
+        "name": "Locations",
+        "description": "Global place search (geocoding) for weather lookups.",
+    },
+    {
+        "name": "Auth",
+        "description": "Registration, login and farmer profile (hashed passwords, signed tokens).",
+    },
+    {
+        "name": "Admin",
+        "description": "Admin/monitoring statistics, protected by ADMIN_TOKEN.",
+    },
 ]
-
 
 app = FastAPI(
     title="Smart Agriculture Prediction API",
-    description="AI-powered crop recommendation API for the Smart Agriculture Prediction System.",
-    version="1.0.0",
+    description=(
+        "AI-powered crop recommendation API for the Smart Agriculture Prediction System."
+    ),
+    version=APP_VERSION,
     openapi_tags=openapi_tags,
     docs_url=None,
     redoc_url=None,
     openapi_url="/openapi.json",
 )
 
+ALLOWED_ORIGINS = get_cors_origins()
 
 app.add_middleware(
     CORSMiddleware,
@@ -129,58 +106,38 @@ app.add_middleware(
 )
 
 
-@app.get(
-    "/",
-    tags=["System"],
-    summary="Smart Agriculture API",
-    description="Returns basic information confirming that the API is running.",
-)
-def root():
-    return {"message": "Smart Agriculture Prediction API is running"}
+@app.middleware("http")
+async def access_log(request: Request, call_next):
+    """Basic request logging (method, path, status, duration)."""
+    import time
 
-
-@app.get(
-    "/health",
-    tags=["Health"],
-    summary="Health Check",
-    description="Checks whether the Smart Agriculture prediction service is available.",
-)
-def health():
-    return {"status": "healthy"}
-
-
-@app.post(
-    "/predict",
-    tags=["Crop Prediction"],
-    summary="Crop Prediction",
-    description=(
-        "Uses the trained Random Forest model to recommend a suitable crop "
-        "based on soil and environmental conditions."
-    ),
-    response_model=CropPredictionResponse,
-    responses={
-        200: {
-            "description": "Crop recommended by the trained Random Forest model.",
-            "content": {
-                "application/json": {
-                    "example": {"recommended_crop": "rice"},
-                }
-            },
-        },
-        422: {"description": "Validation error: missing or invalid input fields."},
-    },
-)
-def predict(data: CropInput):
-    recommended_crop = predict_crop(
-        N=data.N,
-        P=data.P,
-        K=data.K,
-        temperature=data.temperature,
-        humidity=data.humidity,
-        ph=data.ph,
-        rainfall=data.rainfall,
+    started = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - started) * 1000
+    logger.info(
+        "%s %s -> %s (%.1f ms)",
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration_ms,
     )
-    return {"recommended_crop": recommended_crop}
+    return response
+
+
+# Create tables on import (idempotent) so the API works even when lifespan
+# events are not triggered (e.g. some test harnesses).
+db.init_db()
+
+app.include_router(system.router)
+app.include_router(predict.router)
+app.include_router(catalogue.router)
+app.include_router(history.router)
+app.include_router(recommend.router)
+app.include_router(assistant.router)
+app.include_router(weather.router)
+app.include_router(locations.router)
+app.include_router(auth.router)
+app.include_router(admin.router)
 
 
 @app.get("/api-docs", include_in_schema=False)
@@ -191,4 +148,3 @@ def api_docs():
 @app.get("/redoc", include_in_schema=False)
 def redoc_docs():
     return redoc_html()
-

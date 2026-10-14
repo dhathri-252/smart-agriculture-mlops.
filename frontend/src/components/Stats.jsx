@@ -1,11 +1,14 @@
-const stats = [
-  { value: '22', label: 'Supported Crops', icon: '🌾' },
-  { value: '99.55%', label: 'Model Accuracy', icon: '🎯' },
-  { value: '7', label: 'Input Features', icon: '🧪' },
-  { value: 'Random Forest', label: 'ML Model', icon: '🌳' },
-]
+import { useTranslation } from '../i18n/LanguageContext.jsx'
 
 export default function Stats() {
+  const { t } = useTranslation()
+  const stats = [
+    { value: '22', label: t('stats.crops'), icon: '🌾' },
+    { value: '99.55%', label: t('stats.accuracy'), icon: '🎯' },
+    { value: '7', label: t('stats.features'), icon: '🧪' },
+    { value: 'Random Forest', label: t('stats.model'), icon: '🌳' },
+  ]
+
   return (
     <section className="stats-section">
       <div className="container stats-grid">

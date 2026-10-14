@@ -1,0 +1,182 @@
+[
+ {
+  "crop_id": "barley",
+  "file": "images/crops/barley.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ABarley_Crop_-_geograph.org.uk_-_26237.jpg",
+  "source": "Wikimedia Commons",
+  "author": "GeographBot",
+  "license": "CC BY-SA 2.0",
+  "verified": true,
+  "bytes": 79775
+ },
+ {
+  "crop_id": "brinjal",
+  "file": "images/crops/brinjal.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AAn_aubergine-eggplant-brinjal_plant_with_a_hanging_fruit..jpg",
+  "source": "Wikimedia Commons",
+  "author": "Azreey",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 42382
+ },
+ {
+  "crop_id": "chickpea",
+  "file": "images/crops/chickpea.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ASynergistic_effect_of_natural_chickpea_leaf_exudates_acids_in_heterocyclization_-_a_greener_protocol_for_benzopyran_synthesis.pdf",
+  "source": "Wikimedia Commons",
+  "author": "DaxBot",
+  "license": "CC BY 4.0",
+  "verified": true,
+  "bytes": 53406
+ },
+ {
+  "crop_id": "garlic",
+  "file": "images/crops/garlic.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ABulbs_of_Garlic_Displayed_For_Sale_At_A_Local_Market.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Airypedia",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 33683
+ },
+ {
+  "crop_id": "grapes",
+  "file": "images/crops/grapes.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AA_bunch_of_grapes_on_a_vine.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Anunet",
+  "license": "CC0",
+  "verified": true,
+  "bytes": 51802
+ },
+ {
+  "crop_id": "guava",
+  "file": "images/crops/guava.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AFruitful_Guava_Tree_%E2%80%93_From_Branch_to_Table.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Sato619A",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 114995
+ },
+ {
+  "crop_id": "lemon",
+  "file": "images/crops/lemon.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ALemon%2C_Lemon_tree%2C_Florence%2C_Italy.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Argenberg",
+  "license": "CC BY 4.0",
+  "verified": true,
+  "bytes": 35484
+ },
+ {
+  "crop_id": "mango",
+  "file": "images/crops/mango.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AChopped_Amrapali_mango_on_a_tree%2C_Kurigram%2C_Bangladesh.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Tanvir Rahat",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 49253
+ },
+ {
+  "crop_id": "onion",
+  "file": "images/crops/onion.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ACommon_onion_harvested_at_Goodnestone_Park_Kent_England.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Acabashi",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 74913
+ },
+ {
+  "crop_id": "orange",
+  "file": "images/crops/orange.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AOrange-Fruit-Pieces.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Evan-Amos",
+  "license": "CC BY-SA 3.0",
+  "verified": true,
+  "bytes": 26671
+ },
+ {
+  "crop_id": "potato",
+  "file": "images/crops/potato.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3APotato_harvest_-_empty_trailer_awaiting_its_turn_-_geograph.org.uk_-_1539468.jpg",
+  "source": "Wikimedia Commons",
+  "author": "GeographBot",
+  "license": "CC BY-SA 2.0",
+  "verified": true,
+  "bytes": 49368
+ },
+ {
+  "crop_id": "proso_millet",
+  "file": "images/crops/proso_millet.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3A2000_dryland_proso_millet_plots_combined_-_DPLA_-_2536de22017fed6ba116431e14eb89b1.jpg",
+  "source": "Wikimedia Commons",
+  "author": "DPLA bot",
+  "license": "CC BY 4.0",
+  "verified": true,
+  "bytes": 20578
+ },
+ {
+  "crop_id": "rice",
+  "file": "images/crops/rice.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AColorful_sky_with_orange_and_pink_clouds_reflecting_in_the_water_of_a_paddy_field_at_dusk_in_Don_Det_Laos.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Basile Morin",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 56772
+ },
+ {
+  "crop_id": "rye",
+  "file": "images/crops/rye.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AA_crop_of_Rye_%28Secale_cereale%29_-_geograph.org.uk_-_7505311.jpg",
+  "source": "Wikimedia Commons",
+  "author": "GeographBot",
+  "license": "CC BY-SA 2.0",
+  "verified": true,
+  "bytes": 59161
+ },
+ {
+  "crop_id": "sugarbeet",
+  "file": "images/crops/sugarbeet.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AA_sugar_beet_cleaner-loader_-_geograph.org.uk_-_1303056.jpg",
+  "source": "Wikimedia Commons",
+  "author": "GeographBot",
+  "license": "CC BY-SA 2.0",
+  "verified": true,
+  "bytes": 43977
+ },
+ {
+  "crop_id": "sugarcane",
+  "file": "images/crops/sugarcane.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ACeruku_field_%2C_sugarcane_crop.JPG",
+  "source": "Wikimedia Commons",
+  "author": "Bhaskaranaidu",
+  "license": "CC BY-SA 3.0",
+  "verified": true,
+  "bytes": 85718
+ },
+ {
+  "crop_id": "sweet_lime",
+  "file": "images/crops/sweet_lime.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3ASweet_limes_of_Salem.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Thamizhpparithi Maari",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 49145
+ },
+ {
+  "crop_id": "tomato",
+  "file": "images/crops/tomato.jpg",
+  "source_url": "https://commons.wikimedia.org/wiki/File%3AOrganic_home-grown_tomatoes_-_unripe_to_ripe.jpg",
+  "source": "Wikimedia Commons",
+  "author": "Podzemnik",
+  "license": "CC BY-SA 4.0",
+  "verified": true,
+  "bytes": 76242
+ }
+]

@@ -9,8 +9,10 @@ COPY api/ ./api/
 COPY src/ ./src/
 COPY models/ ./models/
 
-ENV CORS_ALLOW_ORIGINS=""
-
 EXPOSE 8000
 
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the existing FastAPI application. Using `python -m uvicorn` (rather than
+# the `uvicorn` console script) adds the working directory (=/app) to
+# sys.path so the `api` and `src` packages import correctly. Uvicorn is started
+# on all interfaces so the container port mapping works.
+CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

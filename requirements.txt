@@ -7,3 +7,5 @@ numpy==2.4.6
 scipy==1.17.1
 joblib==1.6.0
 python-multipart==0.0.20
+# Mozilla CA bundle — required for HTTPS provider calls (urllib/OpenWeather)
+certifi==2026.7.22

@@ -1,25 +1,27 @@
 import { useState } from 'react'
 import PredictionResult from './PredictionResult.jsx'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+import { useTranslation } from '../i18n/LanguageContext.jsx'
+import { API_URL, apiFetch, authHeaders } from '../api.js'
 
 const FIELDS = [
-  { key: 'N', label: 'Nitrogen (N)', placeholder: '90', unit: 'ratio', step: '1' },
-  { key: 'P', label: 'Phosphorus (P)', placeholder: '42', unit: 'ratio', step: '1' },
-  { key: 'K', label: 'Potassium (K)', placeholder: '43', unit: 'ratio', step: '1' },
-  { key: 'temperature', label: 'Temperature (°C)', placeholder: '20.87', unit: '°C', step: '0.01' },
-  { key: 'humidity', label: 'Humidity (%)', placeholder: '82', unit: '%', step: '0.01' },
-  { key: 'ph', label: 'Soil pH', placeholder: '6.5', unit: 'pH', step: '0.01' },
-  { key: 'rainfall', label: 'Rainfall (mm)', placeholder: '202.93', unit: 'mm', step: '0.01' },
+  { key: 'N', labelKey: 'form.N', placeholder: '90', unit: 'ratio', step: '1' },
+  { key: 'P', labelKey: 'form.P', placeholder: '42', unit: 'ratio', step: '1' },
+  { key: 'K', labelKey: 'form.K', placeholder: '43', unit: 'ratio', step: '1' },
+  { key: 'temperature', labelKey: 'form.temperature', placeholder: '20.87', unit: '°C', step: '0.01' },
+  { key: 'humidity', labelKey: 'form.humidity', placeholder: '82', unit: '%', step: '0.01' },
+  { key: 'ph', labelKey: 'form.ph', placeholder: '6.5', unit: 'pH', step: '0.01' },
+  { key: 'rainfall', labelKey: 'form.rainfall', placeholder: '202.93', unit: 'mm', step: '0.01' },
 ]
 
 const INITIAL = { N: '', P: '', K: '', temperature: '', humidity: '', ph: '', rainfall: '' }
 
-export default function PredictionForm() {
+export default function PredictionForm({ onPredicted }) {
+  const { t } = useTranslation()
   const [values, setValues] = useState(INITIAL)
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const [payload, setPayload] = useState(null)
   const [apiError, setApiError] = useState('')
 
   function handleChange(key, raw) {
@@ -38,14 +40,14 @@ export default function PredictionForm() {
   function validate() {
     const next = {}
     for (const f of FIELDS) {
+      const label = t(f.labelKey)
       const raw = String(values[f.key]).trim()
       if (raw === '') {
-        next[f.key] = `${f.label} is required.`
+        next[f.key] = `${label} ${t('form.required')}`
         continue
       }
-      const num = Number(raw)
-      if (!Number.isFinite(num)) {
-        next[f.key] = `${f.label} must be a valid number.`
+      if (!Number.isFinite(Number(raw))) {
+        next[f.key] = `${label} ${t('form.invalidNumber')}`
       }
     }
     setErrors(next)
@@ -57,38 +59,58 @@ export default function PredictionForm() {
     setApiError('')
     setResult(null)
     if (!validate()) return
+    const body = {
+      N: Number(values.N),
+      P: Number(values.P),
+      K: Number(values.K),
+      temperature: Number(values.temperature),
+      humidity: Number(values.humidity),
+      ph: Number(values.ph),
+      rainfall: Number(values.rainfall),
+    }
     setLoading(true)
     try {
-      const payload = {
-        N: Number(values.N),
-        P: Number(values.P),
-        K: Number(values.K),
-        temperature: Number(values.temperature),
-        humidity: Number(values.humidity),
-        ph: Number(values.ph),
-        rainfall: Number(values.rainfall),
-      }
       const res = await fetch(`${API_URL}/predict`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify(body),
       })
       if (!res.ok) {
         let msg = `Prediction request failed (HTTP ${res.status}).`
         try {
           const data = await res.json()
-          if (data?.detail) msg = Array.isArray(data.detail) ? data.detail.map((d) => d.msg).join(' ') : JSON.stringify(data.detail)
-        } catch { /* keep default */ }
+          if (data?.detail) {
+            msg = Array.isArray(data.detail)
+              ? data.detail.map((d) => d.msg).join(' ')
+              : String(data.detail)
+          }
+        } catch { /* keep default message */ }
         throw new Error(msg)
       }
       const data = await res.json()
-      setResult(data.recommended_crop)
+      setResult(data)
+      setPayload(body)
+      onPredicted?.()
     } catch (err) {
-      if (err instanceof TypeError) {
-        setApiError('Unable to connect to the prediction service. Please make sure the FastAPI backend is running.')
-      } else {
-        setApiError(err.message || 'Something went wrong. Please try again.')
-      }
+      if (err instanceof TypeError) setApiError(t('form.offline'))
+      else setApiError(err.message || t('form.failed'))
+    } finally {
+      setLoading(false)
+    }
+  }
+  async function loadRecommendations() {
+    if (!payload) return
+    setLoading(true)
+    setApiError('')
+    try {
+      const recs = await apiFetch('/api/recommendations', {
+        method: 'POST',
+        body: payload,
+        auth: true,
+      })
+      setResult((r) => ({ ...r, recommendations: recs.recommendations }))
+    } catch (err) {
+      setApiError(err.code === 'network' ? t('form.offline') : (err.message || t('form.failed')))
     } finally {
       setLoading(false)
     }
@@ -98,11 +120,13 @@ export default function PredictionForm() {
     <section id="predict" className="predict-section">
       <div className="container">
         <div className="section-head">
-          <h2>🌱 Crop Prediction</h2>
-          <p>Enter soil &amp; climate values — the AI model recommends the best crop.</p>
-          <button className="btn btn-ghost btn-sm" onClick={fillExample} type="button">
-            Fill example values
-          </button>
+          <h2>🌱 {t('form.title')}</h2>
+          <p>{t('form.subtitle')}</p>
+          {!result && (
+            <button className="btn btn-ghost btn-sm" onClick={fillExample} type="button">
+              {t('form.fillExample')}
+            </button>
+          )}
         </div>
 
         {!result ? (
@@ -111,7 +135,7 @@ export default function PredictionForm() {
               {FIELDS.map((f) => (
                 <div className="field" key={f.key}>
                   <label htmlFor={`input-${f.key}`}>
-                    {f.label} <span className="unit">· {f.unit}</span>
+                    {t(f.labelKey)} <span className="unit">· {f.unit}</span>
                   </label>
                   <input
                     id={`input-${f.key}`}
@@ -121,6 +145,7 @@ export default function PredictionForm() {
                     value={values[f.key]}
                     onChange={(e) => handleChange(f.key, e.target.value)}
                     disabled={loading}
+                    aria-invalid={Boolean(errors[f.key])}
                   />
                   {errors[f.key] && <span className="field-error">{errors[f.key]}</span>}
                 </div>
@@ -132,21 +157,31 @@ export default function PredictionForm() {
             <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loading}>
               {loading ? (
                 <span className="loading-inline">
-                  <span className="spinner" /> Analyzing agricultural conditions...
+                  <span className="spinner" /> {t('form.loading')}
                 </span>
               ) : (
-                'Predict Crop'
+                t('form.submit')
               )}
             </button>
           </form>
         ) : (
-          <PredictionResult
-            crop={result}
-            onReset={() => {
-              setResult(null)
-              setApiError('')
-            }}
-          />
+          <>
+            {apiError && (
+              <div className="alert alert-error" style={{ maxWidth: 760, margin: '0 auto 14px' }}>
+                ⚠️ {apiError}
+              </div>
+            )}
+            <PredictionResult
+              result={result}
+              loading={loading}
+              onLoadRecommendations={loadRecommendations}
+              onReset={() => {
+                setResult(null)
+                setPayload(null)
+                setApiError('')
+              }}
+            />
+          </>
         )}
       </div>
     </section>

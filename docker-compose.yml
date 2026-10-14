@@ -6,9 +6,27 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - CORS_ALLOW_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://localhost:80,http://localhost:8080
+      - CORS_ALLOW_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,http://smart-agriculture:5173,http://localhost:80,http://localhost:8080
+      # Optional secrets/settings — supplied from the host environment or a .env
+      # file next to this compose file. Never hard-code real values here.
+      - AUTH_SECRET_KEY=${AUTH_SECRET_KEY:-}
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-}
+      - WEATHER_PROVIDER=${WEATHER_PROVIDER:-}
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-}
+      - AI_PROVIDER=${AI_PROVIDER:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-}
+      - OPENAI_MODEL=${OPENAI_MODEL:-}
     volumes:
       - ./models:/app/models:ro
+      # Persist the SQLite prediction-history/user database on the host.
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   frontend:
     build:

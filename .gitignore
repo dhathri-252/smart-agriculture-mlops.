@@ -12,3 +12,8 @@ mlruns/.trash/
 .env.*
 !.env.example
 .ipynb_checkpoints/
+
+# Local SQLite databases (prediction history / users / tests)
+*.db
+*.db-wal
+*.db-shm
