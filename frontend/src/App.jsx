@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { LanguageProvider, useTranslation } from './i18n/LanguageContext.jsx'
 import { apiFetch, getToken, setToken } from './api.js'
+import GuidedCropper from './components/GuidedCropper.jsx'
 import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
 import Stats from './components/Stats.jsx'
 import PredictionForm from './components/PredictionForm.jsx'
 import About from './components/About.jsx'
+import DailyIntelligence from './components/DailyIntelligence.jsx'
 import Dashboard from './components/Dashboard.jsx'
 import Assistant from './components/Assistant.jsx'
 import Weather from './components/Weather.jsx'
@@ -80,9 +82,15 @@ function Shell() {
             <About />
           </>
         )}
-        {view === 'dashboard' && <Dashboard version={historyVersion} onNavigate={navigate} />}
+        {view === 'dashboard' && (
+        <>
+          <DailyIntelligence onNavigate={navigate} />
+          <Dashboard version={historyVersion} onNavigate={navigate} />
+        </>
+      )}
         {view === 'assistant' && <Assistant />}
         {view === 'weather' && <Weather />}
+        {view === 'advanced' && <GuidedCropper onNavigate={navigate} />}
         {view === 'catalogue' && <Catalogue onOpenCrop={openCrop} />}
         {view === 'cropDetail' && selectedCrop && (
           <CropDetail cropId={selectedCrop.id} initial={selectedCrop} onBack={() => navigate('catalogue')} />

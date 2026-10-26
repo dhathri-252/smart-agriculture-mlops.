@@ -3,7 +3,7 @@
  * The auth token is stored in localStorage (no secrets in source code).
  */
 
-export const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+export const API_URL = import.meta.env.VITE_API_URL || ''
 
 const TOKEN_KEY = 'sa_token'
 

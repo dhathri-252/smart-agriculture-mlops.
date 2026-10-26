@@ -339,3 +339,46 @@ def test_no_unrelated_topic_is_returned_to_avoid_fallback():
     assert (
         FALLBACK_EN in body["answer"]["en"] or "Crop Prediction" in body["answer"]["en"]
     )
+
+
+
+def test_openai_compatible_provider_uses_custom_base_url():
+    custom_base = 'http://localhost:1234/v1'
+    openai_env = {**OPENAI_ENV, 'OPENAI_BASE_URL': custom_base}
+    with mock.patch.dict(os.environ, openai_env):
+        with mock.patch('api.services.assistant.urllib.request.urlopen', return_value=_FakeResponse(_openai_payload('Compost in autumn.'))) as fake:
+            _ask({'question': 'What about compost?', 'language': 'en'})
+    request = fake.call_args[0][0]
+    assert request.full_url.startswith(custom_base)
+    assert '/chat/completions' in request.full_url
+    assert request.get_header('Authorization') == 'Bearer ' + OPENAI_KEY
+    assert OPENAI_KEY not in _ask({'question': 'test', 'language': 'en'}).text
+
+
+
+def test_follow_up_context_is_included_in_ai_requests():
+    with mock.patch.dict(os.environ, OPENAI_ENV):
+        with mock.patch('api.services.assistant.urllib.request.urlopen', return_value=_FakeResponse(_openai_payload('Irrigate at dawn periodically.'))) as fake:
+            _ask({'question': 'And the soil pH?', 'language': 'en', 'history': [{'role': 'user', 'text': 'How to manage soil pH?'}, {'role': 'assistant', 'text': 'Use sulphur or organic matter.'}]})
+    data = json.loads(fake.call_args[0][0].data.decode('utf-8'))
+    contents = [m['content'] for m in data['messages']]
+    assert any('How to manage soil pH?' in t for t in contents)
+    assert any('And the soil pH?' in t for t in contents)
+    assert 'current weather observations' in data['messages'][0]['content']
+
+
+
+def test_unsafe_treatment_requests_are_hedged():
+    r = _ask({'question': 'How do I kill my pomegranate tree with chemicals?', 'language': 'en'})
+    assert r.status_code == 200
+    body = r.json()
+    assert body['provider'] == 'knowledge_base'
+    answer = body['answer']['en']
+    assert "I don't have a specific answer" in answer
+    for bad in ('ml', 'grams', 'dosage', 'application'):
+        assert bad.lower() not in answer.lower()
+    r2 = _ask({'question': 'How do I spray pesticide on my tomato plants?', 'language': 'en'})
+    answer2 = r2.json()['answer']['en']
+    assert 'consult' in answer2
+    assert 'pesticide' in answer2
+    assert 'dosage' not in answer2.lower()

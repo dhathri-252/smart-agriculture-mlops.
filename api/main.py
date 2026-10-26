@@ -18,6 +18,7 @@ from api.routers import (
     assistant,
     auth,
     catalogue,
+    daily,
     history,
     locations,
     predict,
@@ -60,6 +61,10 @@ openapi_tags = [
     {
         "name": "Recommendations",
         "description": "Smart farming recommendations combining prediction, soil and weather.",
+    },
+    {
+        "name": "Daily Recommendations",
+        "description": "Rules-based daily crop suitability guidance (seasonal, weather-aware). Separate from ML predictions.",
     },
     {
         "name": "Assistant",
@@ -133,6 +138,7 @@ app.include_router(predict.router)
 app.include_router(catalogue.router)
 app.include_router(history.router)
 app.include_router(recommend.router)
+app.include_router(daily.router)
 app.include_router(assistant.router)
 app.include_router(weather.router)
 app.include_router(locations.router)
